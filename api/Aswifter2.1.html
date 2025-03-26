@@ -176,6 +176,7 @@
                 id="video-player"
                 controls
                 autoplay
+                muted
                 playsinline
                 webkit-playsinline
             >
@@ -199,12 +200,26 @@
     </main>
 
     <script>
-        const videoPlayerContainer = document.getElementById('video-player-container');
         const videoPlayer = document.getElementById('video-player');
-        const videoItems = document.querySelectorAll('.video-item');
-        const starsContainer = document.getElementById('starsContainer');
+
+        // Attempt to play video immediately with minimal delay
+        function initializeVideo() {
+            if (videoPlayer) {
+                videoPlayer.muted = true; // Mute to allow autoplay
+                videoPlayer.play().catch(error => {
+                    console.error('Autoplay failed:', error);
+                    // If autoplay fails, user can manually play
+                });
+            }
+        }
+
+        // Call immediately and also on various events to ensure playback
+        initializeVideo();
+        document.addEventListener('DOMContentLoaded', initializeVideo);
+        window.addEventListener('load', initializeVideo);
 
         // Star generation
+        const starsContainer = document.getElementById('starsContainer');
         function createStar() {
             const star = document.createElement('div');
             star.classList.add('star');
@@ -224,27 +239,23 @@
             createStar();
         }
 
+        // Video item click handler
+        const videoItems = document.querySelectorAll('.video-item');
         videoItems.forEach(item => {
             item.addEventListener('click', () => {
                 const videoSrc = item.dataset.video;
                 if (videoSrc) {
-                    // Set video source
                     videoPlayer.src = videoSrc;
-
-                    // Show video container
-                    videoPlayerContainer.style.display = 'block';
-
-                    // Attempt to play
-                    videoPlayer.load(); // Reload the video
+                    videoPlayer.muted = false; // Unmute when user interacts
                     videoPlayer.play().catch(error => {
-                        console.error('Error attempting to play the video:', error);
-                        alert('Unable to play video. Please check the video source.');
+                        console.error('Error playing video:', error);
+                        alert('Unable to play video. Please try again.');
                     });
                 }
             });
         });
 
-        // Add error handling for video playback
+        // Error handling
         videoPlayer.addEventListener('error', (e) => {
             console.error('Video error:', e);
             alert('An error occurred while trying to play the video.');
