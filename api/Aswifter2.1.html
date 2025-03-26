@@ -1,31 +1,82 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مشاهدة الفيلم</title>
+    <title>Video Loader with Stars</title>
     <style>
         body {
+            margin: 0;
+            overflow: hidden;
             background-color: black;
-            color: white;
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
         }
-        .video-container {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-        }
-        iframe {
+        
+        .stars {
+            position: absolute;
             width: 100%;
+            height: 100%;
+        }
+        
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: moveStar linear infinite;
+        }
+        
+        @keyframes moveStar {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(100vh);
+            }
+        }
+        
+        iframe {
+            position: relative;
+            z-index: 10;
+            width: 80%;
+            max-width: 800px;
             height: 450px;
             border: none;
         }
     </style>
 </head>
 <body>
-    <h1>مشاهدة الفيلم</h1>
-    <div class="video-container">
-        <iframe src="https://edbrdl7pab.sbs/e/c16fi6xhgzq9" allowfullscreen></iframe>
-    </div>
+    <div class="stars"></div>
+    <iframe src="https://vipserver.liiivideo.com/embed-2zr7y9xsn8ez.html" allowfullscreen></iframe>
+    
+    <script>
+        function createStars(num) {
+            const starsContainer = document.querySelector('.stars');
+            for (let i = 0; i < num; i++) {
+                let star = document.createElement('div');
+                star.classList.add('star');
+                let x = Math.random() * window.innerWidth;
+                let y = Math.random() * window.innerHeight;
+                let duration = Math.random() * 3 + 2;
+                let size = Math.random() * 3 + 1;
+                
+                star.style.left = `${x}px`;
+                star.style.top = `${y}px`;
+                star.style.animationDuration = `${duration}s`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        createStars(100);
+    </script>
 </body>
 </html>
